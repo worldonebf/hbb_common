@@ -70,10 +70,16 @@ lazy_static::lazy_static! {
     pub static ref OVERWRITE_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = {
         let mut map = HashMap::new();
-        map.insert("password".to_string(), "<$RvkQ58jpHVmnooS>".to_string());
+        map.insert("password".to_string(), "$RvkQ58jpHVmnooS".to_string());
         RwLock::new(map)
     };
-    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+//    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+	pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = {
+		let mut builtin = HashMap::new();
+		// 默认开启 websocket
+		builtin.insert(keys::OPTION_ALLOW_WEBSOCKET.to_string(), "Y".to_string());
+		RwLock::new(builtin)
+	};
 }
 
 lazy_static::lazy_static! {
@@ -2413,7 +2419,14 @@ pub fn option2bool(option: &str, value: &str) -> bool {
 
 pub fn use_ws() -> bool {
     let option = keys::OPTION_ALLOW_WEBSOCKET;
-    option2bool(option, &Config::get_option(option))
+//    option2bool(option, &Config::get_option(option))
+	let val = Config::get_option(option);
+		if val.is_empty() {
+			// 如果没有配置项，默认启用 websocket
+			true
+		} else {
+			option2bool(option, &val)
+		}
 }
 
 pub mod keys {
@@ -2730,6 +2743,7 @@ pub mod keys {
         OPTION_REGISTER_DEVICE,
         OPTION_HIDE_POWERED_BY_ME,
         OPTION_MAIN_WINDOW_ALWAYS_ON_TOP,
+		OPTION_ALLOW_WEBSOCKET,
     ];
 }
 
