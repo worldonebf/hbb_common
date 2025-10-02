@@ -469,7 +469,7 @@ impl Config2 {
         config.unlock_pin = unlock_pin;
         store |= store2;
 		
-		// 新增逻辑：检查并添加 allow-websocket 配置项（如果缺失）
+		// 新增逻辑：检查并添加 allow-websocket  配置项（如果缺失）
         use crate::config::keys;  // 确保引入 keys，如果文件中已有则无需重复
         if config.options.get(keys::OPTION_ALLOW_WEBSOCKET).is_none() {
             config.options.insert(keys::OPTION_ALLOW_WEBSOCKET.to_string(), "Y".to_string());
